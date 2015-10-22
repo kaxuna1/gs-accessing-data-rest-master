@@ -1,0 +1,28 @@
+package main.Repositorys;
+
+import java.util.List;
+
+import main.models.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.transaction.annotation.Transactional;
+
+@Transactional
+public interface UserRepository extends JpaRepository<User, Long> {
+
+	List<User> findByUsernameAndPassword(@Param("username") String username,@Param("password") String password);
+	@Query("SELECT u FROM User u WHERE u.username LIKE CONCAT('%',:username,'%') OR u.email LIKE CONCAT('%',:email,'%') OR u.address LIKE CONCAT('%',:address,'%')")
+	Page<User> findByUsernameOrEmailOrAddress(@Param("username")String username,@Param("email")String email,@Param("address")String address,Pageable pageable);
+	List<User> findByEmail(@Param("email")String email,Pageable pageable);
+	List<User> findByPersonalNumber(@Param("personalNumber")String personalNumber,Pageable pageable);
+	List<User> findByType(@Param("type")String type);
+
+
+
+}
