@@ -35,7 +35,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
    /* providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")*/
     compile("com.h2database:h2")
-    compile('mysql:mysql-connector-java:5.1.29')
+    compile('mysql:mysql-connector-java:5.1.36')
 }
 
 task wrapper(type: Wrapper) {

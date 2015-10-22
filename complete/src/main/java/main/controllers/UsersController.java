@@ -1,10 +1,9 @@
 package main.controllers;
 
-import main.Repositorys.UserTypeRepository;
 import main.models.User;
 import main.models.UserBuilder;
 import main.Repositorys.UserRepository;
-import main.models.UserType;
+import main.models.Enum.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -59,10 +58,7 @@ public class UsersController {
         return "მომხმარებელი შეიქმნა წარმატებით! (id = " + user.getId() + ")";
     }
 
-    private Pageable constructPageSpecification(int pageIndex) {
-        Pageable pageSpecification = new PageRequest(pageIndex, 3);
-        return pageSpecification;
-    }
+
     @RequestMapping("/getusers")
     @ResponseBody
     public Page<User> getusers(int index,String search){
@@ -114,8 +110,11 @@ public class UsersController {
             user.setAddress(k.getAddress());
         }
 
-        userDao.save(user);
-
+        try {
+            userDao.save(user);
+        }catch (Exception e){
+            return null;
+        }
         return user;
     }
     @RequestMapping("/deleteuser")
@@ -131,6 +130,10 @@ public class UsersController {
 
     }
 
+    private Pageable constructPageSpecification(int pageIndex) {
+        Pageable pageSpecification = new PageRequest(pageIndex, 10);
+        return pageSpecification;
+    }
     @Autowired
     private UserRepository userDao;
 }
