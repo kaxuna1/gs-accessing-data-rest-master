@@ -2,7 +2,9 @@ package main.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by vakhtanggelashvili on 10/23/15.
@@ -12,6 +14,7 @@ import java.util.Date;
 public class Parcel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "parcelId")
     private long id;
 
     @Column
@@ -41,6 +44,9 @@ public class Parcel {
     private Date expectedDeliveryDate;
 
     @Column
+    private Date deliveryDate;
+
+    @Column
     @NotNull
     private int status;
 
@@ -53,19 +59,22 @@ public class Parcel {
     private long serviceTypeId;
 
     @Column
-    @NotNull
     private String comment;
 
     @Column
-    @NotNull
     private String recievedBy;
 
     @Column
-    @NotNull
     private byte[] signature;
 
+    @OneToMany(mappedBy = "parcel",cascade = CascadeType.ALL)
+    private List<Movement> movements;
 
-    public Parcel(long organisationId, long userId, String reciever, String address, String sentFrom, Date expectedDeliveryDate, int status, long formatId, long serviceTypeId) {
+    public Parcel(){
+
+    }
+
+    public Parcel(long organisationId, long userId, String reciever, String address, String sentFrom, Date expectedDeliveryDate, int status, long formatId, long serviceTypeId,String barCode) {
         this.setOrganisationId(organisationId);
         this.setUserId(userId);
         this.setReciever(reciever);
@@ -75,6 +84,11 @@ public class Parcel {
         this.setStatus(status);
         this.setFormatId(formatId);
         this.setServiceTypeId(serviceTypeId);
+        this.setBarcode(barCode);
+        movements=new ArrayList<Movement>();
+    }
+    public void addMovement(Movement movement){
+        this.movements.add(movement);
     }
 
     public long getId() {
@@ -187,5 +201,21 @@ public class Parcel {
 
     public void setSignature(byte[] signature) {
         this.signature = signature;
+    }
+
+    public Date getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(Date deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
+    public List<Movement> getMovements() {
+        return movements;
+    }
+
+    public void setMovements(List<Movement> movements) {
+        this.movements = movements;
     }
 }

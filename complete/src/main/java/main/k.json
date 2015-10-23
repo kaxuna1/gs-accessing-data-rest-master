@@ -1,0 +1,33 @@
+[
+  {
+    "id": 1,
+    "organisationId": 1,
+    "userId": 1,
+    "barcode": "4123412412",
+    "reciever": "მიმღები",
+    "address": "მისამართი",
+    "sentFrom": "გაიგზავნა ამისგან",
+    "expectedDeliveryDate": 1446062400000,
+    "deliveryDate": null,
+    "status": 1,
+    "formatId": 1,
+    "serviceTypeId": 1,
+    "comment": "კომენტარი",
+    "recievedBy": "",
+    "signature": null,
+    "movements": [
+      {
+        "id": 1,
+        "movementTypeId": 1,
+        "movementText": "დარეგისტრირდა",
+        "date": 1445563388000
+      },
+      {
+        "id": 2,
+        "movementTypeId": 2,
+        "movementText": "ჩაიბარა კურიერმა",
+        "date": 1445649788000
+      }
+    ]
+  }
+]
