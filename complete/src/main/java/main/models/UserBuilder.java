@@ -1,5 +1,7 @@
 package main.models;
 
+import java.util.List;
+
 public class UserBuilder {
     private String username;
     private String password;
@@ -13,6 +15,7 @@ public class UserBuilder {
     private int type;
     private int regionId;
     private int zoneId;
+    private List<Session> sessions;
 
     public UserBuilder setUsername(String username) {
         this.username = username;
@@ -73,8 +76,12 @@ public class UserBuilder {
         this.zoneId = zoneId;
         return this;
     }
+    public UserBuilder setSessions(List<Session> sessions){
+        this.sessions=sessions;
+        return this;
+    }
 
     public User createUser() {
-        return new User(username, password, email, name, surname, address, organisationId, mobile, personalNumber, type, regionId, zoneId);
+        return new User(username, password, email, name, surname, address, organisationId, mobile, personalNumber, type, regionId, zoneId, sessions);
     }
 }

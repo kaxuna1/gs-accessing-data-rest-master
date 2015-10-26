@@ -1,12 +1,13 @@
 package main.controllers;
 
-import main.Repositorys.OrganisationRepository;
 import main.Repositorys.RegionRepository;
 import main.models.Region;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  * Created by vakhtanggelashvili on 10/23/15.
@@ -34,6 +35,17 @@ public class RegionController {
             }
         }
         return region;
+    }
+    @RequestMapping("/deleteregion")
+    @ResponseBody
+    public boolean edit(long id){
+        regionRepository.delete(id);
+        return true;
+    }
+    @RequestMapping("getregions")
+    @ResponseBody
+    public List<Region> getRegions(){
+        return regionRepository.findAll();
     }
 
 

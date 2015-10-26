@@ -24,7 +24,7 @@ public interface ParcelRepository extends JpaRepository<Parcel, Long> {
             " OR u.address LIKE CONCAT('%',:address,'%')" +
             " OR u.recievedBy LIKE CONCAT('%',:recievedBy,'%'))" +
             " AND u.organisationId=:organisationId")
-    Page<Parcel> findByBarcodeOrRecieverOrAddressOrRecievedByAndOrganisationId(@Param("barcode")String barcode,@Param("reciever")String reciever,@Param("address")String address,@Param("recievedBy")String recievedBy,@Param("organisationId")int organisationId,Pageable pageable);
+    Page<Parcel> findByBarcodeOrRecieverOrAddressOrRecievedByAndOrganisationId(@Param("barcode")String barcode,@Param("reciever")String reciever,@Param("address")String address,@Param("recievedBy")String recievedBy,@Param("organisationId")long organisationId,Pageable pageable);
 
     @Query("SELECT u FROM Parcel u WHERE (u.barcode LIKE CONCAT('%',:barcode,'%')" +
             " OR u.reciever LIKE CONCAT('%',:reciever,'%')" +

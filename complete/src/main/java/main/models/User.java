@@ -1,7 +1,10 @@
 package main.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -9,6 +12,7 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "userId")
 	private long id;
     @NotNull
     @Column
@@ -42,15 +46,19 @@ public class User {
     @Column
     private int zoneId;
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Session> sessions;
+
+
     public User(long id){
         this.id=id;
     }
     public User(){
-
     }
 
 
-    public User(String username, String password, String email, String name, String surname, String address, long organisationId, String mobile, String personalNumber, int type, int regionId, int zoneId){
+    public User(String username, String password, String email, String name, String surname, String address, long organisationId, String mobile, String personalNumber, int type, int regionId, int zoneId, List<Session> sessions){
         this.username = username;
         this.password = password;
         this.email = email;
@@ -63,6 +71,7 @@ public class User {
         this.type = type;
         this.regionId = regionId;
         this.zoneId = zoneId;
+        this.sessions = sessions;
     }
 
 
@@ -167,5 +176,13 @@ public class User {
 
     public void setZoneId(int zoneId) {
         this.zoneId = zoneId;
+    }
+
+    public List<Session> getSessions() {
+        return sessions;
+    }
+
+    public void setSessions(List<Session> sessions) {
+        this.sessions = sessions;
     }
 }

@@ -1,11 +1,9 @@
 package main.controllers;
 
 import main.Repositorys.ParcelRepository;
+import main.Repositorys.SessionRepository;
+import main.models.*;
 import main.models.Enum.MovementType;
-import main.models.Movement;
-import main.models.Parcel;
-import main.models.ParcelBuilder;
-import main.models.Region;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -133,9 +131,12 @@ public class ParcelController {
 
     @RequestMapping(value = "/getparcels")
     @ResponseBody
-    public List<Parcel> getPacels(int index,String search){
+    public Page<Parcel> getParcels(@CookieValue("projectSessionId") String sessionId,int index,String search){
 
-        return parcelRepository.findAll();
+
+        if(sessionId!=null)
+        return parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndOrganisationId(search, search, search, search, sessionRepository.findOne(Long.parseLong(sessionId)).getUser().getOrganisationId(),constructPageSpecification(index));
+        else return null;
     }
 
     private Pageable constructPageSpecification(int pageIndex) {
@@ -144,4 +145,6 @@ public class ParcelController {
     }
     @Autowired
     private ParcelRepository parcelRepository;
+    @Autowired
+    private SessionRepository sessionRepository;
 }

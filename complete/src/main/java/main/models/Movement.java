@@ -26,6 +26,7 @@ public class Movement {
     @Column
     private Date date;
 
+
     @ManyToOne
     @JoinColumn(name = "parcelId")
     @JsonIgnore

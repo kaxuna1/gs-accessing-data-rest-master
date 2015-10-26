@@ -1,5 +1,6 @@
 package main.controllers;
 
+import main.models.Session;
 import main.models.User;
 import main.models.UserBuilder;
 import main.Repositorys.UserRepository;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.ArrayList;
 
 /**
  * Created by vakhtanggelashvili on 10/21/15.
@@ -47,6 +50,7 @@ public class UsersController {
                 .setType(type)
                 .setRegionId(regionId)
                 .setZoneId(zoneId)
+                .setSessions(new ArrayList<Session>())
                 .createUser();
         try {
 
