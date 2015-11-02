@@ -1,14 +1,18 @@
 package main.controllers;
 
 import main.Repositorys.OrganisationRepository;
+import main.Repositorys.SessionRepository;
 import main.Repositorys.UserRepository;
+import main.models.Enum.UserType;
 import main.models.Organisation;
 import main.models.OrganisationBuilder;
+import main.models.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,22 +27,29 @@ public class OrganisationController {
 
     @RequestMapping("/createorganisation")
     @ResponseBody
-    public Organisation createorganisation(@RequestParam(value="name",required = true, defaultValue="")String name,
+    public Organisation createorganisation(@CookieValue("projectSessionId") String sessionId,
+                                           @RequestParam(value="name",required = true, defaultValue="")String name,
                                            @RequestParam(value="address",required = true, defaultValue="")String address,
                                            @RequestParam(value="mobileNumber",required = true, defaultValue="")String mobileNumber,
                                            @RequestParam(value="email",required = true, defaultValue="")String email,
                                            @RequestParam(value="regionId",required = true, defaultValue="0")int regionId){
-        Organisation organisation=null;
-        organisation= new OrganisationBuilder().setAddress(address).setEmail(email).setMobileNumber(mobileNumber).setName(name)
-                .setRegionId(regionId).createOrganisation();
-        try {
-            organisationRepository.save(organisation);
-        }
-        catch (Exception e){
-            return null;
-        }
 
-        return organisation;
+        if(sessionId!=null){
+            Session session=sessionDao.findOne(Long.parseLong(sessionId));
+            if(session.getUser().getType()== UserType.admin.getCODE()||session.getUser().getType()==UserType.sa.getCODE()){
+                Organisation organisation=null;
+                organisation= new OrganisationBuilder().setAddress(address).setEmail(email).setMobileNumber(mobileNumber).setName(name)
+                        .setRegionId(regionId).createOrganisation();
+                try {
+                    organisationRepository.save(organisation);
+                }
+                catch (Exception e){
+                    return null;
+                }
+
+                return organisation;
+            }else return null;
+        }else return null;
     }
     @RequestMapping("/getorganisations")
     @ResponseBody
@@ -46,6 +57,11 @@ public class OrganisationController {
 
         return organisationRepository.findByNameOrEmailOrAddress(search,search,search,constructPageSpecification(index));
 
+    }
+    @RequestMapping("/getallorganisations")
+    @ResponseBody
+    public List<Organisation> getAllOrganisations(){
+        return organisationRepository.findAll();
     }
     @RequestMapping("/editorganisation")
     @ResponseBody
@@ -88,6 +104,9 @@ public class OrganisationController {
         Pageable pageSpecification = new PageRequest(pageIndex, 10);
         return pageSpecification;
     }
+
+    @Autowired
+    private SessionRepository sessionDao;
     @Autowired
     private OrganisationRepository organisationRepository;
 }

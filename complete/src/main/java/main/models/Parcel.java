@@ -65,6 +65,9 @@ public class Parcel {
     private String recievedBy;
 
     @Column
+    private long regionId;
+
+    @Column
     private byte[] signature;
 
     @OneToMany(mappedBy = "parcel",cascade = CascadeType.ALL)
@@ -74,7 +77,8 @@ public class Parcel {
 
     }
 
-    public Parcel(long organisationId, long userId, String reciever, String address, String sentFrom, Date expectedDeliveryDate, int status, long formatId, long serviceTypeId,String barCode) {
+    public Parcel(long organisationId, long userId, String reciever, String address, String sentFrom, Date expectedDeliveryDate, int status, long formatId, long serviceTypeId, String barCode, long regionId) {
+        this.regionId = regionId;
         this.setOrganisationId(organisationId);
         this.setUserId(userId);
         this.setReciever(reciever);
@@ -85,7 +89,8 @@ public class Parcel {
         this.setFormatId(formatId);
         this.setServiceTypeId(serviceTypeId);
         this.setBarcode(barCode);
-        movements=new ArrayList<Movement>();
+        this.setRegionId(regionId);
+        this.movements=new ArrayList<Movement>();
     }
     public void addMovement(Movement movement){
         this.movements.add(movement);
@@ -217,5 +222,13 @@ public class Parcel {
 
     public void setMovements(List<Movement> movements) {
         this.movements = movements;
+    }
+
+    public long getRegionId() {
+        return regionId;
+    }
+
+    public void setRegionId(long regionId) {
+        this.regionId = regionId;
     }
 }

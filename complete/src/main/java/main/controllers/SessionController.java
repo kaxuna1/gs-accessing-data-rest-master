@@ -6,6 +6,7 @@ import main.models.Session;
 import main.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -34,6 +35,20 @@ public class SessionController {
             userDao.save(user);
             return session;
         }
+    }
+    @RequestMapping("/logout")
+    @ResponseBody
+    public Session logout(@CookieValue("projectSessionId") String sessionId){
+        Session session=sessionDao.findOne(Long.parseLong(sessionId));
+        session.setIsactive(false);
+        sessionDao.save(session);
+        return session;
+    }
+    @RequestMapping("/getsessionstatus")
+    @ResponseBody
+    public Session sessionStatus(@CookieValue("projectSessionId") String sessionId){
+        Session session=sessionDao.findOne(Long.parseLong(sessionId));
+        return session;
     }
     @Autowired
     private UserRepository userDao;

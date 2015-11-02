@@ -4,6 +4,7 @@ import main.Repositorys.ParcelRepository;
 import main.Repositorys.SessionRepository;
 import main.models.*;
 import main.models.Enum.MovementType;
+import main.models.Enum.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,40 +24,54 @@ import java.util.List;
 public class ParcelController {
     @RequestMapping("/createparcel")
     @ResponseBody
-    public Parcel create(@RequestParam(value="organisationId",required = true, defaultValue="0")long organisationId,
-                         @RequestParam(value="userId",required = true, defaultValue="0")long userId,
-                         @RequestParam(value="reciever",required = true, defaultValue="")String reciever,
+    public Parcel create(@CookieValue("projectSessionId") String sessionId,
+                         @RequestParam(value="reciever",required = true, defaultValue="")String receiver,
                          @RequestParam(value="address",required = true, defaultValue="")String address,
                          @RequestParam(value="sentFrom",required = true, defaultValue="")String sentFrom,
                          @RequestParam(value="formatId",required = true, defaultValue="0")long formatId,
-                         @RequestParam(value="serviceTypeId",required = true, defaultValue="0")long serviceTypeId,@RequestParam(value = "barcode",required = true,defaultValue = "0000000000")String barcode){
+                         @RequestParam(value="serviceTypeId",required = true, defaultValue="0")long serviceTypeId,
+                         @RequestParam(value = "barcode",required = true,defaultValue = "0000000000")String barcode){
 
-        //TODO მოსალოდნელი მიტანის დრო გამოითვალოს სერვისის ტიპის მიხედვით
-        Date expectedDeliveryDate=new Date(new Date().getTime()+1000*60*60*24*3);
+        if(sessionId!=null){
+            Session session=sessionRepository.findOne(Long.parseLong(sessionId));
+            if(session.isIsactive()){
+                if(session.getUser().getType()== UserType.sa.getCODE()||session.getUser().getType()==UserType.organisation.getCODE()||session.getUser().getType()==UserType.organisationUser.getCODE()){
 
-        int status= MovementType.Registered.getCODE();
+                  //TODO მოსალოდნელი მიტანის დრო გამოითვალოს სერვისის ტიპის მიხედვით
+                    Date expectedDeliveryDate=new Date(new Date().getTime()+1000*60*60*24*3);
 
-        Parcel parcel=new ParcelBuilder()
-                .setOrganisationId(organisationId)
-                .setUserId(userId)
-                .setReciever(reciever)
-                .setAddress(address)
-                .setSentFrom(sentFrom)
-                .setExpectedDeliveryDate(expectedDeliveryDate)
-                .setStatus(status)
-                .setFormatId(formatId)
-                .setServiceTypeId(serviceTypeId)
-                .setBarCode(barcode)
-                .createParcel();
-        Movement movement=new Movement(MovementType.Registered.getCODE(),"დარეგისტრირდა",new Date(),parcel);
-        parcel.getMovements().add(movement);
-        try {
-            parcelRepository.save(parcel);
-        }catch (Exception e){
-            e.printStackTrace();
-            return null;
-        }
-        return parcel;
+                    int status= MovementType.Registered.getCODE();
+
+                    Parcel parcel=new ParcelBuilder()
+                            .setOrganisationId(session.getUser().getOrganisationId())
+                            .setUserId(session.getUser().getId())
+                            .setReciever(receiver)
+                            .setAddress(address)
+                            .setSentFrom(sentFrom)
+                            .setExpectedDeliveryDate(expectedDeliveryDate)
+                            .setStatus(status)
+                            .setFormatId(formatId)
+                            .setServiceTypeId(serviceTypeId)
+                            .setBarCode(barcode)
+                            .setRegionId(session.getUser().getRegionId())
+                            .createParcel();
+                    Movement movement=new Movement(MovementType.Registered.getCODE(),"დარეგისტრირდა",new Date(),parcel);
+                    parcel.getMovements().add(movement);
+                    try {
+                        parcelRepository.save(parcel);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        return null;
+                    }
+                    return parcel;
+
+
+
+                }else return null;
+            }else return null;
+        }else return null;
+
+
     }
     @RequestMapping("/editparcel")
     @ResponseBody
@@ -108,25 +123,43 @@ public class ParcelController {
     }
     @RequestMapping(value = "/uploadsignature",method = RequestMethod.POST)
     @ResponseBody
-    public Parcel uploadSignature(long id,@RequestParam CommonsMultipartFile[] fileUpload){
-        Parcel parcel=parcelRepository.findOne(id);
-        if (fileUpload != null && fileUpload.length > 0) {
-            for (CommonsMultipartFile aFile : fileUpload){
-                parcel.setSignature(aFile.getBytes());
-                try {
-                    parcelRepository.save(parcel);
-                }catch (Exception e){
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-        }
-        return parcel;
+    public Parcel uploadSignature(@CookieValue("projectSessionId") String sessionId,long id,@RequestParam CommonsMultipartFile[] fileUpload){
+        if(sessionId!=null){
+            Session session=sessionRepository.findOne(Long.parseLong(sessionId));
+            if(session.isIsactive()){
+                if(session.getUser().getType()==UserType.courier.getCODE()){
+                    Parcel parcel=parcelRepository.findOne(id);
+                    if (fileUpload != null && fileUpload.length > 0) {
+                        for (CommonsMultipartFile aFile : fileUpload){
+                            parcel.setSignature(aFile.getBytes());
+                            try {
+                                parcelRepository.save(parcel);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                                return null;
+                            }
+                        }
+                    }
+                    return parcel;
+                }else return null;
+            }else return null;
+        }else return null;
     }
     @RequestMapping(value = "/parcelsignature/{id}")
     @ResponseBody
-    public byte[] getParcelSignature(HttpServletResponse response , @PathVariable("id") long id){
-        return parcelRepository.findOne(id).getSignature();
+    public byte[] getParcelSignature(HttpServletResponse response,@CookieValue("projectSessionId") String sessionId , @PathVariable("id") long id){
+        if(sessionId!=null){
+            Session session=sessionRepository.findOne(Long.parseLong(sessionId));
+            if(session.isIsactive()){
+                Parcel parcel=parcelRepository.findOne(id);
+                if(session.getUser().getOrganisationId()==parcel.getOrganisationId()){
+                    return parcel.getSignature();
+                }else return null;
+
+            }else return null;
+
+        }else return null;
+
     }
 
     @RequestMapping(value = "/getparcels")
@@ -134,9 +167,14 @@ public class ParcelController {
     public Page<Parcel> getParcels(@CookieValue("projectSessionId") String sessionId,int index,String search){
 
 
-        if(sessionId!=null)
-        return parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndOrganisationId(search, search, search, search, sessionRepository.findOne(Long.parseLong(sessionId)).getUser().getOrganisationId(),constructPageSpecification(index));
-        else return null;
+        if(sessionId!=null){
+            Session session=sessionRepository.findOne(Long.parseLong(sessionId));
+            if(session.isIsactive()){
+                if(session.getUser().getType()==UserType.sa.getCODE()||session.getUser().getType()==UserType.admin.getCODE())
+                    return parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedBy(search,search,search,search,constructPageSpecification(index));
+                else return parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndOrganisationId(search, search, search, search, session.getUser().getOrganisationId(),constructPageSpecification(index));
+            }else return null;
+        }else return null;
     }
 
     private Pageable constructPageSpecification(int pageIndex) {

@@ -36,6 +36,7 @@ public class Movement {
 
     }
 
+
     public Movement(int movementTypeId, String movementText, Date date, Parcel parcel) {
         this.movementTypeId = movementTypeId;
         this.movementText = movementText;

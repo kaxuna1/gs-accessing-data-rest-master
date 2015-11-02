@@ -13,6 +13,7 @@ public class ParcelBuilder {
     private long formatId;
     private long serviceTypeId;
     private String barCode;
+    private long regionId;
 
     public ParcelBuilder setOrganisationId(long organisationId) {
         this.organisationId = organisationId;
@@ -21,6 +22,10 @@ public class ParcelBuilder {
 
     public ParcelBuilder setUserId(long userId) {
         this.userId = userId;
+        return this;
+    }
+    public ParcelBuilder setRegionId(long regionId) {
+        this.regionId = regionId;
         return this;
     }
 
@@ -64,6 +69,6 @@ public class ParcelBuilder {
     }
 
     public Parcel createParcel() {
-        return new Parcel(organisationId, userId, reciever, address, sentFrom, expectedDeliveryDate, status, formatId, serviceTypeId,barCode);
+        return new Parcel(organisationId, userId, reciever, address, sentFrom, expectedDeliveryDate, status, formatId, serviceTypeId,barCode, regionId);
     }
 }
