@@ -3,6 +3,7 @@ package main.controllers;
 import main.Repositorys.ParcelRepository;
 import main.Repositorys.SessionRepository;
 import main.models.*;
+import main.models.Enum.JsonReturnCodes;
 import main.models.Enum.MovementType;
 import main.models.Enum.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ import java.util.List;
 public class ParcelController {
     @RequestMapping("/createparcel")
     @ResponseBody
-    public Parcel create(@CookieValue("projectSessionId") String sessionId,
+    public JsonMessage create(@CookieValue("projectSessionId") String sessionId,
                          @RequestParam(value="reciever",required = true, defaultValue="")String receiver,
                          @RequestParam(value="address",required = true, defaultValue="")String address,
                          @RequestParam(value="sentFrom",required = true, defaultValue="")String sentFrom,
@@ -37,6 +38,9 @@ public class ParcelController {
             if(session.isIsactive()){
                 if(session.getUser().getType()== UserType.sa.getCODE()||session.getUser().getType()==UserType.organisation.getCODE()||session.getUser().getType()==UserType.organisationUser.getCODE()){
 
+                    if(parcelRepository.findByBarcode(barcode).size()>0){
+                        return new JsonMessage(JsonReturnCodes.BARRCODEEXISTS.getCODE(),"ბარკოდი უკვე არის დარეგისტრირებული");
+                    }
                   //TODO მოსალოდნელი მიტანის დრო გამოითვალოს სერვისის ტიპის მიხედვით
                     Date expectedDeliveryDate=new Date(new Date().getTime()+1000*60*60*24*3);
 
@@ -62,15 +66,12 @@ public class ParcelController {
                         parcelRepository.save(parcel);
                     }catch (Exception e){
                         e.printStackTrace();
-                        return null;
+                        return new JsonMessage(JsonReturnCodes.ERROR.getCODE(),"ჩანაწერი შეიქმნისას მოხმდა შეცდომა");
                     }
-                    return parcel;
-
-
-
-                }else return null;
-            }else return null;
-        }else return null;
+                    return new JsonMessage(JsonReturnCodes.Ok.getCODE(),"ჩანაწერი შეიქმნა წარმატებით");
+                }else return new JsonMessage(JsonReturnCodes.DONTHAVEPERMISSION.getCODE(),"არ გაქვთ შესაბამისი უფლება");
+            }else return new JsonMessage(JsonReturnCodes.SESSIONEXPIRED.getCODE(),"სესიას გაუვიდა ვადა");
+        }else return new JsonMessage(JsonReturnCodes.NOTLOGGEDIN.getCODE(),"საჭიროა სისტემაში შესვლა");
 
 
     }

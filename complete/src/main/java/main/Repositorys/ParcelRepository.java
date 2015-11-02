@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by vakhtanggelashvili on 10/23/15.
@@ -53,4 +54,5 @@ public interface ParcelRepository extends JpaRepository<Parcel, Long> {
     Page<Parcel> findByDateRange(@Param("dateStart")Date dateStart,@Param("dateEnd")Date dateEnd,Pageable pageable);
     @Query("SELECT u FROM Parcel u where (u.deliveryDate between to_date(:dateStart,'MM/DD/YYYY') and to_date(:dateEnd,'MM/DD/YYYY')) AND u.organisationId=:organisationId")
     Page<Parcel> findByDateRangeAndId(@Param("dateStart")Date dateStart,@Param("dateEnd")Date dateEnd,@Param("organisationId")String organisationId,Pageable pageable);
+    List<Parcel> findByBarcode(@Param("barcode")String barcode);
  }

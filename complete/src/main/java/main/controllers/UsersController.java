@@ -1,6 +1,8 @@
 package main.controllers;
 
 import main.Repositorys.SessionRepository;
+import main.models.Enum.JsonReturnCodes;
+import main.models.JsonMessage;
 import main.models.Session;
 import main.models.User;
 import main.models.UserBuilder;
@@ -26,7 +28,7 @@ public class UsersController {
 
     @RequestMapping("/createuser")
     @ResponseBody
-    public String create(@CookieValue("projectSessionId") String sessionId,
+    public JsonMessage create(@CookieValue("projectSessionId") String sessionId,
                          @RequestParam(value = "username", required = true, defaultValue = "") String username,
                          @RequestParam(value = "password", required = true, defaultValue = "") String password,
                          @RequestParam(value = "email", required = true, defaultValue = "") String email,
@@ -41,7 +43,10 @@ public class UsersController {
                          @RequestParam(value = "zoneId", required = false, defaultValue = "0") int zoneId) {
 
         if (username == "" || password == "" || email == "" || name == "" || surname == "" || address == "") {
-            return null;
+            return new JsonMessage(JsonReturnCodes.ERROR.getCODE(),"არასაკმარისი ინფორმაცია");
+        }
+        if(userDao.findByUsername(username).size()>0){
+            return new JsonMessage(JsonReturnCodes.USEREXISTS.getCODE(),"მომხმარებელი ასეთი სახელით უკვე არსებობს");
         }
         Session session =sessionDao.findOne(Long.parseLong(sessionId));
         if(session.getUser().getType()==UserType.organisation.getCODE()){
@@ -71,9 +76,10 @@ public class UsersController {
 
             userDao.save(user);
         } catch (Exception ex) {
-            return "Error creating the user: " + ex.toString();
+
+            return new JsonMessage(JsonReturnCodes.ERROR.getCODE(),ex.toString());
         }
-        return "მომხმარებელი შეიქმნა წარმატებით! (id = " + user.getId() + ")";
+        return new JsonMessage(JsonReturnCodes.Ok.getCODE(),"მომხმარებელი შეიქმნა წარმატებით");
     }
 
 
