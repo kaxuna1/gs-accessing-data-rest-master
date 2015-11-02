@@ -54,6 +54,7 @@ public class ParcelController {
                             .setServiceTypeId(serviceTypeId)
                             .setBarCode(barcode)
                             .setRegionId(session.getUser().getRegionId())
+                            .setZoneId(0)
                             .createParcel();
                     Movement movement=new Movement(MovementType.Registered.getCODE(),"დარეგისტრირდა",new Date(),parcel);
                     parcel.getMovements().add(movement);

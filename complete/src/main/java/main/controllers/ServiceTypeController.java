@@ -41,6 +41,39 @@ public class ServiceTypeController {
         return serviceTypeRepository.findAll();
     }
 
+    @RequestMapping("/deleteservicetype")
+    @ResponseBody
+    public boolean deleteServiceType(@CookieValue("projectSessionId") String sessionId,long id){
+        if(sessionId!=null){
+            Session session=sessionRepository.findOne(Long.parseLong(sessionId));
+            if(session.getUser().getType()== UserType.sa.getCODE()||session.getUser().getType()== UserType.admin.getCODE()){
+                serviceTypeRepository.delete(id);
+                return true;
+            }else return false;
+        }else return false;
+    }
+    @RequestMapping("/editservicetype")
+    @ResponseBody
+    public ServiceType editServiceType(@CookieValue("projectSessionId") String sessionId,long editId,ServiceType serviceTypeE){
+
+        if(sessionId!=null){
+            Session session=sessionRepository.findOne(Long.parseLong(sessionId));
+            if(session.getUser().getType()== UserType.sa.getCODE()||session.getUser().getType()== UserType.admin.getCODE()){
+                ServiceType serviceType=serviceTypeRepository.findOne(editId);
+                if(serviceTypeE.getName()!=null){
+                    serviceType.setName(serviceTypeE.getName());
+                }
+                if(serviceTypeE.getPricePlus()!=0){
+                    serviceType.setPricePlus(serviceTypeE.getPricePlus());
+                }
+                serviceTypeRepository.save(serviceType);
+
+                return serviceType;
+            }else return null;
+        }else return null;
+
+    }
+
 
 
     @Autowired

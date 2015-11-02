@@ -67,6 +67,10 @@ public class Parcel {
     @Column
     private long regionId;
 
+
+
+    @Column long zoneId;
+
     @Column
     private byte[] signature;
 
@@ -77,7 +81,7 @@ public class Parcel {
 
     }
 
-    public Parcel(long organisationId, long userId, String reciever, String address, String sentFrom, Date expectedDeliveryDate, int status, long formatId, long serviceTypeId, String barCode, long regionId) {
+    public Parcel(long organisationId, long userId, String reciever, String address, String sentFrom, Date expectedDeliveryDate, int status, long formatId, long serviceTypeId, String barCode, long regionId,long zoneId) {
         this.regionId = regionId;
         this.setOrganisationId(organisationId);
         this.setUserId(userId);
@@ -90,6 +94,7 @@ public class Parcel {
         this.setServiceTypeId(serviceTypeId);
         this.setBarcode(barCode);
         this.setRegionId(regionId);
+        this.setZoneId(zoneId);
         this.movements=new ArrayList<Movement>();
     }
     public void addMovement(Movement movement){
@@ -230,5 +235,13 @@ public class Parcel {
 
     public void setRegionId(long regionId) {
         this.regionId = regionId;
+    }
+
+    public long getZoneId() {
+        return zoneId;
+    }
+
+    public void setZoneId(long zoneId) {
+        this.zoneId = zoneId;
     }
 }
