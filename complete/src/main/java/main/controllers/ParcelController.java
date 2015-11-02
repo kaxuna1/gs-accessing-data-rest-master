@@ -172,7 +172,17 @@ public class ParcelController {
             if(session.isIsactive()){
                 if(session.getUser().getType()==UserType.sa.getCODE()||session.getUser().getType()==UserType.admin.getCODE())
                     return parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedBy(search,search,search,search,constructPageSpecification(index));
-                else return parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndOrganisationId(search, search, search, search, session.getUser().getOrganisationId(),constructPageSpecification(index));
+                else {
+                    if(session.getUser().getType()==UserType.regionManager.getCODE()){
+                        return parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndRegionId(search, search, search, search, session.getUser().getRegionId(),constructPageSpecification(index));
+                    }else{
+                        if (session.getUser().getType()==UserType.zoneManager.getCODE()){
+                            parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndZoneId(search, search, search, search, session.getUser().getZoneId(),constructPageSpecification(index));
+                        }else
+                            return parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndOrganisationId(search, search, search, search, session.getUser().getOrganisationId(),constructPageSpecification(index));
+
+                    }return null;
+                }
             }else return null;
         }else return null;
     }

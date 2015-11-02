@@ -38,6 +38,39 @@ public class FormatController {
         return formatRepository.findAll();
     }
 
+    @RequestMapping("/deleteformats")
+    @ResponseBody
+    public boolean deleteFormats(@CookieValue("projectSessionId") String sessionId,long id){
+        if(sessionId!=null){
+            Session session=sessionRepository.findOne(Long.parseLong(sessionId));
+            if(session.getUser().getType()== UserType.sa.getCODE()||session.getUser().getType()== UserType.admin.getCODE()){
+                formatRepository.delete(id);
+                return true;
+            }else return false;
+        }else return false;
+    }
+    @RequestMapping("/editformats")
+    @ResponseBody
+    public Format editFormat(@CookieValue("projectSessionId") String sessionId,long editId,Format formatE){
+
+        if(sessionId!=null){
+            Session session=sessionRepository.findOne(Long.parseLong(sessionId));
+            if(session.getUser().getType()== UserType.sa.getCODE()||session.getUser().getType()== UserType.admin.getCODE()){
+                Format format=formatRepository.findOne(editId);
+                if(formatE.getName()!=null){
+                    format.setName(formatE.getName());
+                }
+                if(formatE.getPrice()!=0){
+                    format.setPrice(formatE.getPrice());
+                }
+                formatRepository.save(format);
+
+                return format;
+            }else return null;
+        }else return null;
+
+    }
+
     @Autowired
     private FormatRepository formatRepository;
     @Autowired
