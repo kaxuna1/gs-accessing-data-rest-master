@@ -34,6 +34,10 @@ public class Region {
     @OneToMany(mappedBy = "region",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<User> users;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "region",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Organisation> organisations;
+
     public Region(){
 
     }
@@ -43,6 +47,7 @@ public class Region {
         this.zones=new ArrayList<Zone>();
         this.parcels=new ArrayList<Parcel>();
         this.users=new ArrayList<User>();
+        this.organisations=new ArrayList<Organisation>();
     }
 
     public String getName() {

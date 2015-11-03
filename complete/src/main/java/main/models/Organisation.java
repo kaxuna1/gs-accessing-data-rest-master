@@ -1,7 +1,10 @@
 package main.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * Created by vakhtanggelashvili on 10/22/15.
@@ -11,6 +14,7 @@ import javax.validation.constraints.NotNull;
 public class Organisation {
 
     @Id
+    @Column(name = "organisationId")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
@@ -30,17 +34,25 @@ public class Organisation {
     @Column
     private String email;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "organisation",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Parcel> parcels;
 
-    @NotNull
-    @Column
-    private int regionId;
+    @JsonIgnore
+    @OneToMany(mappedBy = "organisation",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<User> users;
 
-    public Organisation(String name, String address, String mobileNumber, String email, int regionId) {
+
+    @ManyToOne
+    @JoinColumn(name = "regionId")
+    private Region region;
+
+    public Organisation(String name, String address, String mobileNumber, String email, Region region) {
         this.name = name;
         this.address = address;
         this.mobileNumber = mobileNumber;
         this.email = email;
-        this.regionId = regionId;
+        this.region = region;
     }
     public Organisation(){
 
@@ -80,15 +92,31 @@ public class Organisation {
         this.email = email;
     }
 
-    public int getRegionId() {
-        return regionId;
+    public Region getRegionId() {
+        return region;
     }
 
-    public void setRegionId(int regionId) {
-        this.regionId = regionId;
+    public void setRegionId(Region region) {
+        this.region = region;
     }
 
     public long getId() {
         return id;
+    }
+
+    public List<Parcel> getParcels() {
+        return parcels;
+    }
+
+    public void setParcels(List<Parcel> parcels) {
+        this.parcels = parcels;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }

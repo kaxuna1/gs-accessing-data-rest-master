@@ -31,8 +31,9 @@ public class User {
     private String surname;
     @Column
     private String address;
-    @Column
-    private long organisationId;
+    @ManyToOne
+    @JoinColumn(name = "organisationId")
+    private Organisation organisation;
     @Column
     private String mobile;
     @Column
@@ -61,14 +62,17 @@ public class User {
     }
 
 
-    public User(String username, String password, String email, String name, String surname, String address, long organisationId, String mobile, String personalNumber, int type, Zone zone, List<Session> sessions, Region region){
+    public User(String username, String password, String email,
+                String name, String surname, String address,
+                Organisation organisation, String mobile, String personalNumber,
+                int type, Zone zone, List<Session> sessions, Region region){
         this.username = username;
         this.password = password;
         this.email = email;
         this.name = name;
         this.surname = surname;
         this.address = address;
-        this.organisationId = organisationId;
+        this.organisation = organisation;
         this.mobile = mobile;
         this.personalNumber = personalNumber;
         this.type = type;
@@ -141,12 +145,12 @@ public class User {
         this.address = address;
     }
 
-    public long getOrganisationId() {
-        return organisationId;
+    public Organisation getOrganisation() {
+        return organisation;
     }
 
-    public void setOrganisationId(long organisationId) {
-        this.organisationId = organisationId;
+    public void setOrganisation(Organisation organisation) {
+        this.organisation = organisation;
     }
 
     public String getMobile() {

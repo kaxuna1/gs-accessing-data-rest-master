@@ -9,7 +9,7 @@ public class UserBuilder {
     private String name;
     private String surname;
     private String address;
-    private long organisationId;
+    private Organisation organisation;
     private String mobile;
     private String personalNumber;
     private int type;
@@ -47,8 +47,8 @@ public class UserBuilder {
         return this;
     }
 
-    public UserBuilder setOrganisationId(long organisationId) {
-        this.organisationId = organisationId;
+    public UserBuilder setOrganisationId(Organisation organisation) {
+        this.organisation = organisation;
         return this;
     }
 
@@ -82,6 +82,6 @@ public class UserBuilder {
     }
 
     public User createUser() {
-        return new User(username, password, email, name, surname, address, organisationId, mobile, personalNumber, type, zone, sessions,region);
+        return new User(username, password, email, name, surname, address, organisation, mobile, personalNumber, type, zone, sessions,region);
     }
 }

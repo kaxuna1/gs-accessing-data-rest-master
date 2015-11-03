@@ -24,14 +24,23 @@ public interface ParcelRepository extends JpaRepository<Parcel, Long> {
             " OR u.reciever LIKE CONCAT('%',:reciever,'%')" +
             " OR u.address LIKE CONCAT('%',:address,'%')" +
             " OR u.recievedBy LIKE CONCAT('%',:recievedBy,'%'))" +
-            " AND u.organisationId=:organisationId")
-    Page<Parcel> findByBarcodeOrRecieverOrAddressOrRecievedByAndOrganisationId(@Param("barcode")String barcode,@Param("reciever")String reciever,@Param("address")String address,@Param("recievedBy")String recievedBy,@Param("organisationId")long organisationId,Pageable pageable);
+            " AND u.organisation=:organisation")
+    Page<Parcel> findByBarcodeOrRecieverOrAddressOrRecievedByAndOrganisation(@Param("barcode")String barcode,
+                                                                             @Param("reciever")String reciever,
+                                                                             @Param("address")String address,
+                                                                             @Param("recievedBy")String recievedBy,
+                                                                             @Param("organisation")long organisation,
+                                                                             Pageable pageable);
 
     @Query("SELECT u FROM Parcel u WHERE (u.barcode LIKE CONCAT('%',:barcode,'%')" +
             " OR u.reciever LIKE CONCAT('%',:reciever,'%')" +
             " OR u.address LIKE CONCAT('%',:address,'%')" +
             " OR u.recievedBy LIKE CONCAT('%',:recievedBy,'%'))")
-    Page<Parcel> findByBarcodeOrRecieverOrAddressOrRecievedBy(@Param("barcode")String barcode,@Param("reciever")String reciever,@Param("address")String address,@Param("recievedBy")String recievedBy,Pageable pageable);
+    Page<Parcel> findByBarcodeOrRecieverOrAddressOrRecievedBy(@Param("barcode")String barcode,
+                                                              @Param("reciever")String reciever,
+                                                              @Param("address")String address,
+                                                              @Param("recievedBy")String recievedBy,
+                                                              Pageable pageable);
 
     @Query("SELECT u FROM Parcel u WHERE (u.barcode LIKE CONCAT('%',:barcode,'%')" +
             " OR u.reciever LIKE CONCAT('%',:reciever,'%')" +
@@ -50,14 +59,24 @@ public interface ParcelRepository extends JpaRepository<Parcel, Long> {
             " OR u.address LIKE CONCAT('%',:address,'%')" +
             " OR u.recievedBy LIKE CONCAT('%',:recievedBy,'%'))" +
             " AND u.zone=:zone")
-    Page<Parcel> findByBarcodeOrRecieverOrAddressOrRecievedByAndZoneId(@Param("barcode")String barcode,@Param("reciever")String reciever,@Param("address")String address,@Param("recievedBy")String recievedBy,@Param("zone")long zone,Pageable pageable);
+    Page<Parcel> findByBarcodeOrRecieverOrAddressOrRecievedByAndZoneId(@Param("barcode")String barcode,
+                                                                       @Param("reciever")String reciever,
+                                                                       @Param("address")String address,
+                                                                       @Param("recievedBy")String recievedBy,
+                                                                       @Param("zone")long zone,
+                                                                       Pageable pageable);
 
 
     Page<Parcel> findByUserId(@Param("userId")int userId,Pageable pageable);
-    Page<Parcel> findByOrganisationId(@Param("organisationId")int organisationId,Pageable pageable);
-    @Query("SELECT u FROM Parcel u where (u.deliveryDate between to_date(:dateStart,'MM/DD/YYYY') and to_date(:dateEnd,'MM/DD/YYYY'))")
+    Page<Parcel> findByOrganisation(@Param("organisation")long organisation,Pageable pageable);
+    @Query("SELECT u FROM Parcel u where (u.deliveryDate between to_date(:dateStart,'MM/DD/YYYY') " +
+            "and to_date(:dateEnd,'MM/DD/YYYY'))")
     Page<Parcel> findByDateRange(@Param("dateStart")Date dateStart,@Param("dateEnd")Date dateEnd,Pageable pageable);
-    @Query("SELECT u FROM Parcel u where (u.deliveryDate between to_date(:dateStart,'MM/DD/YYYY') and to_date(:dateEnd,'MM/DD/YYYY')) AND u.organisationId=:organisationId")
-    Page<Parcel> findByDateRangeAndId(@Param("dateStart")Date dateStart,@Param("dateEnd")Date dateEnd,@Param("organisationId")String organisationId,Pageable pageable);
+    @Query("SELECT u FROM Parcel u where (u.deliveryDate between to_date(:dateStart,'MM/DD/YYYY') " +
+            "and to_date(:dateEnd,'MM/DD/YYYY')) AND u.organisation=:organisation")
+    Page<Parcel> findByDateRangeAndId(@Param("dateStart")Date dateStart,
+                                      @Param("dateEnd")Date dateEnd,
+                                      @Param("organisation")long organisation,
+                                      Pageable pageable);
     List<Parcel> findByBarcode(@Param("barcode")String barcode);
  }

@@ -1,11 +1,8 @@
 package main.controllers;
 
-import main.Repositorys.RegionRepository;
-import main.Repositorys.SessionRepository;
-import main.Repositorys.ZoneRepository;
+import main.Repositorys.*;
 import main.models.*;
 import main.models.Enum.JsonReturnCodes;
-import main.Repositorys.UserRepository;
 import main.models.Enum.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -50,14 +47,16 @@ public class UsersController {
         Session session =sessionDao.findOne(Long.parseLong(sessionId));
         Region region;
         Zone zone;
+        Organisation organisation;
         if(session.getUser().getType()==UserType.organisation.getCODE()){
-            organisationId=session.getUser().getOrganisationId();
+            organisation=session.getUser().getOrganisation();
             zone=session.getUser().getZone();
             type=UserType.organisationUser.getCODE();
             region=session.getUser().getRegion();
         }else{
             zone=zoneRepository.findOne(zoneId);
             region=regionRepository.findOne(regionId);
+            organisation=organisationRepository.findOne(organisationId);
         }
 
         User user = null;
@@ -68,7 +67,7 @@ public class UsersController {
                 .setName(name)
                 .setSurname(surname)
                 .setAddress(address)
-                .setOrganisationId(organisationId)
+                .setOrganisationId(organisation)
                 .setMobile(mobile)
                 .setPersonalNumber(personalNumber)
                 .setType(type)
@@ -94,7 +93,7 @@ public class UsersController {
         if(sessionId!=null){
             Session session=sessionDao.findOne(Long.parseLong(sessionId));
             if(session.getUser().getType()==UserType.organisation.getCODE()||session.getUser().getType()==UserType.organisationUser.getCODE()){
-                return userDao.findByUsernameOrEmailOrAddressAndOrganisationId(search, search, search,session.getUser().getOrganisationId(), constructPageSpecification(index));
+                return userDao.findByUsernameOrEmailOrAddressAndOrganisation(search, search, search,session.getUser().getOrganisation().getId(), constructPageSpecification(index));
             }else{
                 if(session.getUser().getType()==UserType.sa.getCODE()||session.getUser().getType()==UserType.admin.getCODE()){
                     return userDao.findByUsernameOrEmailOrAddress(search, search, search, constructPageSpecification(index));
@@ -170,4 +169,6 @@ public class UsersController {
     private UserRepository userDao;
     @Autowired
     private SessionRepository sessionDao;
+    @Autowired
+    private OrganisationRepository organisationRepository;
 }

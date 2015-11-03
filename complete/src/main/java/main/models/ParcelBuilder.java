@@ -3,7 +3,7 @@ package main.models;
 import java.util.Date;
 
 public class ParcelBuilder {
-    private long organisationId;
+    private Organisation organisation;
     private long userId;
     private String reciever;
     private String address;
@@ -16,8 +16,8 @@ public class ParcelBuilder {
     private Region region;
     private Zone zone;
 
-    public ParcelBuilder setOrganisationId(long organisationId) {
-        this.organisationId = organisationId;
+    public ParcelBuilder setOrganisation(Organisation organisation) {
+        this.organisation = organisation;
         return this;
     }
 
@@ -74,6 +74,6 @@ public class ParcelBuilder {
     }
 
     public Parcel createParcel() {
-        return new Parcel(organisationId, userId, reciever, address, sentFrom, expectedDeliveryDate, status, format, serviceTypeId,barCode, region, zone);
+        return new Parcel(organisation, userId, reciever, address, sentFrom, expectedDeliveryDate, status, format, serviceTypeId,barCode, region, zone);
     }
 }

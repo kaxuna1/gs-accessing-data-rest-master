@@ -49,7 +49,7 @@ public class ParcelController {
                     int status= MovementType.Registered.getCODE();
 
                     Parcel parcel=new ParcelBuilder()
-                            .setOrganisationId(session.getUser().getOrganisationId())
+                            .setOrganisation(session.getUser().getOrganisation())
                             .setUserId(session.getUser().getId())
                             .setReciever(receiver)
                             .setAddress(address)
@@ -153,7 +153,7 @@ public class ParcelController {
             Session session=sessionRepository.findOne(Long.parseLong(sessionId));
             if(session.isIsactive()){
                 Parcel parcel=parcelRepository.findOne(id);
-                if(session.getUser().getOrganisationId()==parcel.getOrganisationId()){
+                if(session.getUser().getOrganisation()==parcel.getOrganisation()){
                     return parcel.getSignature();
                 }else return null;
 
@@ -180,7 +180,7 @@ public class ParcelController {
                         if (session.getUser().getType()==UserType.zoneManager.getCODE()){
                             parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndZoneId(search, search, search, search, session.getUser().getZone().getId(),constructPageSpecification(index));
                         }else
-                            return parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndOrganisationId(search, search, search, search, session.getUser().getOrganisationId(),constructPageSpecification(index));
+                            return parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndOrganisation(search, search, search, search, session.getUser().getOrganisation().getId(),constructPageSpecification(index));
 
                     }return null;
                 }

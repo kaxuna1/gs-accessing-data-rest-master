@@ -19,9 +19,9 @@ public class Parcel {
     @Column(name = "parcelId")
     private long id;
 
-    @Column
-    @NotNull
-    private long organisationId;
+    @ManyToOne
+    @JoinColumn(name = "organisationId")
+    private Organisation organisation;
 
     @Column
     @NotNull
@@ -84,11 +84,11 @@ public class Parcel {
 
     }
 
-    public Parcel(long organisationId, long userId, String reciever, String address, String sentFrom, Date expectedDeliveryDate, int status, Format format, long serviceTypeId, String barCode, Region region, Zone zone) {
+    public Parcel(Organisation organisation, long userId, String reciever, String address, String sentFrom, Date expectedDeliveryDate, int status, Format format, long serviceTypeId, String barCode, Region region, Zone zone) {
         this.region = region;
         this.zone = zone;
         //this.regionId = regionId;
-        this.setOrganisationId(organisationId);
+        this.setOrganisation(organisation);
         this.setUserId(userId);
         this.setReciever(reciever);
         this.setAddress(address);
@@ -113,12 +113,12 @@ public class Parcel {
         this.id = id;
     }
 
-    public long getOrganisationId() {
-        return organisationId;
+    public Organisation getOrganisation() {
+        return organisation;
     }
 
-    public void setOrganisationId(long organisationId) {
-        this.organisationId = organisationId;
+    public void setOrganisation(Organisation organisationId) {
+        this.organisation = organisation;
     }
 
     public long getUserId() {
