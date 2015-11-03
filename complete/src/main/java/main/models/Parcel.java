@@ -70,6 +70,10 @@ public class Parcel {
     @JoinColumn(name = "regionId")
     private Region region;
 
+    @ManyToOne
+    @JoinColumn(name = "zoneId")
+    private Zone zone;
+
     @Column
     private byte[] signature;
 
@@ -80,8 +84,9 @@ public class Parcel {
 
     }
 
-    public Parcel(long organisationId, long userId, String reciever, String address, String sentFrom, Date expectedDeliveryDate, int status, long formatId, long serviceTypeId, String barCode, long zoneId, Region region) {
+    public Parcel(long organisationId, long userId, String reciever, String address, String sentFrom, Date expectedDeliveryDate, int status, Format format, long serviceTypeId, String barCode, Region region, Zone zone) {
         this.region = region;
+        this.zone = zone;
         //this.regionId = regionId;
         this.setOrganisationId(organisationId);
         this.setUserId(userId);
@@ -90,7 +95,7 @@ public class Parcel {
         this.setSentFrom(sentFrom);
         this.setExpectedDeliveryDate(expectedDeliveryDate);
         this.setStatus(status);
-        this.setFormatId(formatId);
+        this.setFormat(format);
         this.setServiceTypeId(serviceTypeId);
         this.setBarcode(barCode);
         //this.setZoneId(zoneId);
@@ -172,12 +177,12 @@ public class Parcel {
         this.status = status;
     }
 
-    public long getFormatId() {
-        return formatId;
+    public Format getFormatId() {
+        return format;
     }
 
-    public void setFormatId(long formatId) {
-        this.formatId = formatId;
+    public void setFormatId(Format format) {
+        this.format = format;
     }
 
     public long getServiceTypeId() {
@@ -258,5 +263,13 @@ public class Parcel {
 
     public void setFormat(Format format) {
         this.format = format;
+    }
+
+    public Zone getZone() {
+        return zone;
+    }
+
+    public void setZone(Zone zone) {
+        this.zone = zone;
     }
 }

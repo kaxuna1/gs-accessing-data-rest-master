@@ -1,7 +1,11 @@
 package main.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by KGelashvili on 11/2/2015.
@@ -22,11 +26,16 @@ public class Format {
     @NotNull
     private float price;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "format",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Parcel> parcels;
+
     public Format() {
     }
     public Format(String name,float price) {
         this.name=name;
         this.price=price;
+        this.parcels=new ArrayList<Parcel>();
     }
 
     public float getPrice() {

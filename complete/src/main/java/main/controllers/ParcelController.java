@@ -1,7 +1,9 @@
 package main.controllers;
 
+import main.Repositorys.FormatRepository;
 import main.Repositorys.ParcelRepository;
 import main.Repositorys.SessionRepository;
+import main.Repositorys.ZoneRepository;
 import main.models.*;
 import main.models.Enum.JsonReturnCodes;
 import main.models.Enum.MovementType;
@@ -54,11 +56,11 @@ public class ParcelController {
                             .setSentFrom(sentFrom)
                             .setExpectedDeliveryDate(expectedDeliveryDate)
                             .setStatus(status)
-                            .setFormatId(formatId)
+                            .setFormat(formatRepository.findOne(formatId))
                             .setServiceTypeId(serviceTypeId)
                             .setBarCode(barcode)
                             .setRegion(session.getUser().getRegion())
-                            .setZoneId(0)
+                            .setZone(zoneRepository.findOne(1l))
                             .createParcel();
                     Movement movement=new Movement(MovementType.Registered.getCODE(),"დარეგისტრირდა",new Date(),parcel);
                     parcel.getMovements().add(movement);
@@ -102,9 +104,6 @@ public class ParcelController {
         }
         if(parcelEdit.getStatus()!=0){
             parcel.setStatus(parcelEdit.getStatus());
-        }
-        if(parcelEdit.getFormatId()!=0){
-            parcel.setFormatId(parcelEdit.getFormatId());
         }
         if(parcelEdit.getServiceTypeId()!=0){
             parcel.setServiceTypeId(parcelEdit.getServiceTypeId());
@@ -176,10 +175,10 @@ public class ParcelController {
                     return parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedBy(search,search,search,search,constructPageSpecification(index));
                 else {
                     if(session.getUser().getType()==UserType.regionManager.getCODE()){
-                        return parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndRegionId(search, search, search, search, session.getUser().getRegionId(),constructPageSpecification(index));
+                        return parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndRegionId(search, search, search, search, session.getUser().getRegion().getId(),constructPageSpecification(index));
                     }else{
                         if (session.getUser().getType()==UserType.zoneManager.getCODE()){
-                            parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndZoneId(search, search, search, search, session.getUser().getZoneId(),constructPageSpecification(index));
+                            parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndZoneId(search, search, search, search, session.getUser().getZone().getId(),constructPageSpecification(index));
                         }else
                             return parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndOrganisationId(search, search, search, search, session.getUser().getOrganisationId(),constructPageSpecification(index));
 
@@ -193,6 +192,10 @@ public class ParcelController {
         Pageable pageSpecification = new PageRequest(pageIndex, 10);
         return pageSpecification;
     }
+    @Autowired
+    private ZoneRepository zoneRepository;
+    @Autowired
+    private FormatRepository formatRepository;
     @Autowired
     private ParcelRepository parcelRepository;
     @Autowired
