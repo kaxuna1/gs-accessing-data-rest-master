@@ -1,5 +1,7 @@
 package main.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -50,9 +52,9 @@ public class Parcel {
     @NotNull
     private int status;
 
-    @Column
-    @NotNull
-    private long formatId;
+    @ManyToOne
+    @JoinColumn(name = "formatId")
+    private Format format;
 
     @Column
     @NotNull
@@ -64,12 +66,9 @@ public class Parcel {
     @Column
     private String recievedBy;
 
-    @Column
-    private long regionId;
-
-
-
-    @Column long zoneId;
+    @ManyToOne
+    @JoinColumn(name = "regionId")
+    private Region region;
 
     @Column
     private byte[] signature;
@@ -81,8 +80,9 @@ public class Parcel {
 
     }
 
-    public Parcel(long organisationId, long userId, String reciever, String address, String sentFrom, Date expectedDeliveryDate, int status, long formatId, long serviceTypeId, String barCode, long regionId,long zoneId) {
-        this.regionId = regionId;
+    public Parcel(long organisationId, long userId, String reciever, String address, String sentFrom, Date expectedDeliveryDate, int status, long formatId, long serviceTypeId, String barCode, long zoneId, Region region) {
+        this.region = region;
+        //this.regionId = regionId;
         this.setOrganisationId(organisationId);
         this.setUserId(userId);
         this.setReciever(reciever);
@@ -93,8 +93,7 @@ public class Parcel {
         this.setFormatId(formatId);
         this.setServiceTypeId(serviceTypeId);
         this.setBarcode(barCode);
-        this.setRegionId(regionId);
-        this.setZoneId(zoneId);
+        //this.setZoneId(zoneId);
         this.movements=new ArrayList<Movement>();
     }
     public void addMovement(Movement movement){
@@ -229,7 +228,7 @@ public class Parcel {
         this.movements = movements;
     }
 
-    public long getRegionId() {
+/*    public long getRegionId() {
         return regionId;
     }
 
@@ -243,5 +242,21 @@ public class Parcel {
 
     public void setZoneId(long zoneId) {
         this.zoneId = zoneId;
+    }*/
+
+    public Region getRegion() {
+        return region;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
+    }
+
+    public Format getFormat() {
+        return format;
+    }
+
+    public void setFormat(Format format) {
+        this.format = format;
     }
 }

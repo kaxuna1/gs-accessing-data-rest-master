@@ -1,11 +1,10 @@
 package main.controllers;
 
+import main.Repositorys.RegionRepository;
 import main.Repositorys.SessionRepository;
+import main.Repositorys.ZoneRepository;
+import main.models.*;
 import main.models.Enum.JsonReturnCodes;
-import main.models.JsonMessage;
-import main.models.Session;
-import main.models.User;
-import main.models.UserBuilder;
 import main.Repositorys.UserRepository;
 import main.models.Enum.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +38,8 @@ public class UsersController {
                          @RequestParam(value = "mobile", required = false, defaultValue = "") String mobile,
                          @RequestParam(value = "personalNumber", required = false, defaultValue = "") String personalNumber,
                          @RequestParam(value = "type", required = true, defaultValue = "0") int type,
-                         @RequestParam(value = "regionId", required = false, defaultValue = "0") int regionId,
-                         @RequestParam(value = "zoneId", required = false, defaultValue = "0") int zoneId) {
+                         @RequestParam(value = "regionId", required = false, defaultValue = "0") long regionId,
+                         @RequestParam(value = "zoneId", required = false, defaultValue = "0") long zoneId) {
 
         if (username == "" || password == "" || email == "" || name == "" || surname == "" || address == "") {
             return new JsonMessage(JsonReturnCodes.ERROR.getCODE(),"არასაკმარისი ინფორმაცია");
@@ -49,11 +48,16 @@ public class UsersController {
             return new JsonMessage(JsonReturnCodes.USEREXISTS.getCODE(),"მომხმარებელი ასეთი სახელით უკვე არსებობს");
         }
         Session session =sessionDao.findOne(Long.parseLong(sessionId));
+        Region region;
+        Zone zone;
         if(session.getUser().getType()==UserType.organisation.getCODE()){
             organisationId=session.getUser().getOrganisationId();
-            zoneId=session.getUser().getZoneId();
+            zone=session.getUser().getZone();
             type=UserType.organisationUser.getCODE();
-            regionId=session.getUser().getRegionId();
+            region=session.getUser().getRegion();
+        }else{
+            zone=zoneRepository.findOne(zoneId);
+            region=regionRepository.findOne(regionId);
         }
 
         User user = null;
@@ -68,8 +72,8 @@ public class UsersController {
                 .setMobile(mobile)
                 .setPersonalNumber(personalNumber)
                 .setType(type)
-                .setRegionId(regionId)
-                .setZoneId(zoneId)
+                .setRegion(region)
+                .setZone(zone)
                 .setSessions(new ArrayList<Session>())
                 .createUser();
         try {
@@ -131,12 +135,6 @@ public class UsersController {
         if (k.getType() != 0) {
             user.setType(k.getType());
         }
-        if (k.getRegionId() != 0) {
-            user.setRegionId(k.getRegionId());
-        }
-        if (k.getZoneId() != 0) {
-            user.setAddress(k.getAddress());
-        }
 
         try {
             userDao.save(user);
@@ -164,6 +162,10 @@ public class UsersController {
         return pageSpecification;
     }
 
+    @Autowired
+    private ZoneRepository zoneRepository;
+    @Autowired
+    private RegionRepository regionRepository;
     @Autowired
     private UserRepository userDao;
     @Autowired

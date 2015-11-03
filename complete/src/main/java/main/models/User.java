@@ -41,10 +41,13 @@ public class User {
     @Column
     @NotNull
     private int type;
-    @Column
-    private int regionId;
-    @Column
-    private int zoneId;
+    @ManyToOne
+    @JoinColumn(name = "regionId")
+    private Region region;
+
+    @ManyToOne
+    @JoinColumn(name = "zoneId")
+    private Zone zone;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     @JsonIgnore
@@ -58,7 +61,7 @@ public class User {
     }
 
 
-    public User(String username, String password, String email, String name, String surname, String address, long organisationId, String mobile, String personalNumber, int type, int regionId, int zoneId, List<Session> sessions){
+    public User(String username, String password, String email, String name, String surname, String address, long organisationId, String mobile, String personalNumber, int type, Zone zone, List<Session> sessions, Region region){
         this.username = username;
         this.password = password;
         this.email = email;
@@ -69,8 +72,9 @@ public class User {
         this.mobile = mobile;
         this.personalNumber = personalNumber;
         this.type = type;
-        this.regionId = regionId;
-        this.zoneId = zoneId;
+        this.region = region;
+        //this.regionId = regionId;
+        this.zone = zone;
         this.sessions = sessions;
     }
 
@@ -161,21 +165,21 @@ public class User {
         this.personalNumber = personalNumber;
     }
 
-    public int getRegionId() {
+   /* public int getRegionId() {
         return regionId;
     }
 
     public void setRegionId(int regionId) {
         this.regionId = regionId;
     }
+*/
 
-
-    public int getZoneId() {
-        return zoneId;
+    public Zone getZone() {
+        return zone;
     }
 
-    public void setZoneId(int zoneId) {
-        this.zoneId = zoneId;
+    public void setZoneId(Zone zone) {
+        this.zone = zone;
     }
 
     public List<Session> getSessions() {
@@ -184,5 +188,13 @@ public class User {
 
     public void setSessions(List<Session> sessions) {
         this.sessions = sessions;
+    }
+
+    public Region getRegion() {
+        return region;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
     }
 }

@@ -13,8 +13,8 @@ public class UserBuilder {
     private String mobile;
     private String personalNumber;
     private int type;
-    private int regionId;
-    private int zoneId;
+    private Region region;
+    private Zone zone;
     private List<Session> sessions;
 
     public UserBuilder setUsername(String username) {
@@ -67,13 +67,13 @@ public class UserBuilder {
         return this;
     }
 
-    public UserBuilder setRegionId(int regionId) {
-        this.regionId = regionId;
+    public UserBuilder setRegion(Region region) {
+        this.region = region;
         return this;
     }
 
-    public UserBuilder setZoneId(int zoneId) {
-        this.zoneId = zoneId;
+    public UserBuilder setZone(Zone zone) {
+        this.zone = zone;
         return this;
     }
     public UserBuilder setSessions(List<Session> sessions){
@@ -82,6 +82,6 @@ public class UserBuilder {
     }
 
     public User createUser() {
-        return new User(username, password, email, name, surname, address, organisationId, mobile, personalNumber, type, regionId, zoneId, sessions);
+        return new User(username, password, email, name, surname, address, organisationId, mobile, personalNumber, type, zone, sessions,region);
     }
 }
