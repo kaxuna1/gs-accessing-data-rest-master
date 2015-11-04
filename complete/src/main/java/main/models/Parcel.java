@@ -23,9 +23,9 @@ public class Parcel {
     @JoinColumn(name = "organisationId")
     private Organisation organisation;
 
-    @Column
-    @NotNull
-    private long userId;
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
     @Column
     @NotNull
     private String barcode;
@@ -84,12 +84,12 @@ public class Parcel {
 
     }
 
-    public Parcel(Organisation organisation, long userId, String reciever, String address, String sentFrom, Date expectedDeliveryDate, int status, Format format, long serviceTypeId, String barCode, Region region, Zone zone) {
-        this.region = region;
+    public Parcel(Organisation organisation, User user, String reciever, String address, String sentFrom, Date expectedDeliveryDate, int status, Format format, long serviceTypeId, String barCode, Region region, Zone zone) {
+        this.setRegion(region);
         this.zone = zone;
         //this.regionId = regionId;
         this.setOrganisation(organisation);
-        this.setUserId(userId);
+        this.setUser(user);
         this.setReciever(reciever);
         this.setAddress(address);
         this.setSentFrom(sentFrom);
@@ -117,16 +117,16 @@ public class Parcel {
         return organisation;
     }
 
-    public void setOrganisation(Organisation organisationId) {
+    public void setOrganisation(Organisation organisation) {
         this.organisation = organisation;
     }
 
-    public long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getBarcode() {
@@ -177,14 +177,6 @@ public class Parcel {
         this.status = status;
     }
 
-    public Format getFormatId() {
-        return format;
-    }
-
-    public void setFormatId(Format format) {
-        this.format = format;
-    }
-
     public long getServiceTypeId() {
         return serviceTypeId;
     }
@@ -233,7 +225,7 @@ public class Parcel {
         this.movements = movements;
     }
 
-/*    public long getRegionId() {
+/*    public long getRegion() {
         return regionId;
     }
 

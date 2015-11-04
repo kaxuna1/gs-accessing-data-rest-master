@@ -5,7 +5,7 @@ public class OrganisationBuilder {
     private String address;
     private String mobileNumber;
     private String email;
-    private int regionId;
+    private Region region;
 
     public OrganisationBuilder setName(String name) {
         this.name = name;
@@ -27,12 +27,12 @@ public class OrganisationBuilder {
         return this;
     }
 
-    public OrganisationBuilder setRegionId(int regionId) {
-        this.regionId = regionId;
+    public OrganisationBuilder setRegion(Region region) {
+        this.region = region;
         return this;
     }
 
     public Organisation createOrganisation() {
-        return new Organisation(name, address, mobileNumber, email, regionId);
+        return new Organisation(name, address, mobileNumber, email, region);
     }
 }

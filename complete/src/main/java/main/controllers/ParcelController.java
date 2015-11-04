@@ -1,9 +1,6 @@
 package main.controllers;
 
-import main.Repositorys.FormatRepository;
-import main.Repositorys.ParcelRepository;
-import main.Repositorys.SessionRepository;
-import main.Repositorys.ZoneRepository;
+import main.Repositorys.*;
 import main.models.*;
 import main.models.Enum.JsonReturnCodes;
 import main.models.Enum.MovementType;
@@ -49,8 +46,8 @@ public class ParcelController {
                     int status= MovementType.Registered.getCODE();
 
                     Parcel parcel=new ParcelBuilder()
-                            .setOrganisation(session.getUser().getOrganisation())
-                            .setUserId(session.getUser().getId())
+                            .setOrganisation(organisationRepository.findOne(session.getUser().getOrganisation().getId()))
+                            .setUser(session.getUser())
                             .setReciever(receiver)
                             .setAddress(address)
                             .setSentFrom(sentFrom)
@@ -59,7 +56,7 @@ public class ParcelController {
                             .setFormat(formatRepository.findOne(formatId))
                             .setServiceTypeId(serviceTypeId)
                             .setBarCode(barcode)
-                            .setRegion(session.getUser().getRegion())
+                            .setRegion(regionRepository.findOne(session.getUser().getOrganisation().getRegion().getId()))
                             .setZone(zoneRepository.findOne(1l))
                             .createParcel();
                     Movement movement=new Movement(MovementType.Registered.getCODE(),"დარეგისტრირდა",new Date(),parcel);
@@ -81,9 +78,6 @@ public class ParcelController {
     @ResponseBody
     public Parcel editParcel(long id,Parcel parcelEdit){
         Parcel parcel=parcelRepository.getOne(id);
-        if(parcelEdit.getUserId()!=0){
-            parcel.setUserId(parcelEdit.getUserId());
-        }
         if(parcelEdit.getBarcode()!=null){
             parcel.setBarcode(parcelEdit.getBarcode());
         }
@@ -192,6 +186,10 @@ public class ParcelController {
         Pageable pageSpecification = new PageRequest(pageIndex, 10);
         return pageSpecification;
     }
+    @Autowired
+    OrganisationRepository organisationRepository;
+    @Autowired
+    private RegionRepository regionRepository;
     @Autowired
     private ZoneRepository zoneRepository;
     @Autowired

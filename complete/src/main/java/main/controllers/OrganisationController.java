@@ -1,11 +1,13 @@
 package main.controllers;
 
 import main.Repositorys.OrganisationRepository;
+import main.Repositorys.RegionRepository;
 import main.Repositorys.SessionRepository;
 import main.Repositorys.UserRepository;
 import main.models.Enum.UserType;
 import main.models.Organisation;
 import main.models.OrganisationBuilder;
+import main.models.Region;
 import main.models.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,14 +34,15 @@ public class OrganisationController {
                                            @RequestParam(value="address",required = true, defaultValue="")String address,
                                            @RequestParam(value="mobileNumber",required = true, defaultValue="")String mobileNumber,
                                            @RequestParam(value="email",required = true, defaultValue="")String email,
-                                           @RequestParam(value="regionId",required = true, defaultValue="0")int regionId){
+                                           @RequestParam(value="regionId",required = true, defaultValue="0")long regionId){
 
         if(sessionId!=null){
             Session session=sessionDao.findOne(Long.parseLong(sessionId));
             if(session.getUser().getType()== UserType.admin.getCODE()||session.getUser().getType()==UserType.sa.getCODE()){
+                Region region=regionRepository.findOne(regionId);
                 Organisation organisation=null;
                 organisation= new OrganisationBuilder().setAddress(address).setEmail(email).setMobileNumber(mobileNumber).setName(name)
-                        .setRegionId(regionId).createOrganisation();
+                        .setRegion(region).createOrganisation();
                 try {
                     organisationRepository.save(organisation);
                 }
@@ -76,9 +79,6 @@ public class OrganisationController {
         if(organisationEdit.getName()!=null){
             organisation.setName(organisationEdit.getName());
         }
-        if(organisationEdit.getRegionId()!=0){
-            organisation.setRegionId(organisationEdit.getRegionId());
-        }
         if(organisationEdit.getMobileNumber()!=null){
             organisation.setMobileNumber(organisationEdit.getMobileNumber());
         }
@@ -105,6 +105,8 @@ public class OrganisationController {
         return pageSpecification;
     }
 
+    @Autowired
+    private RegionRepository regionRepository;
     @Autowired
     private SessionRepository sessionDao;
     @Autowired

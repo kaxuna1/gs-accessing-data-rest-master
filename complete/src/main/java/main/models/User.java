@@ -53,6 +53,9 @@ public class User {
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Session> sessions;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Parcel> parcels;
 
 
     public User(long id){
@@ -169,7 +172,7 @@ public class User {
         this.personalNumber = personalNumber;
     }
 
-   /* public int getRegionId() {
+   /* public int getRegion() {
         return regionId;
     }
 

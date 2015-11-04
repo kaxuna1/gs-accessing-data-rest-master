@@ -92,7 +92,7 @@ public class Organisation {
         this.email = email;
     }
 
-    public Region getRegionId() {
+    public Region getRegion() {
         return region;
     }
 

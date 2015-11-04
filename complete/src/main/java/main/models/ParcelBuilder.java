@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class ParcelBuilder {
     private Organisation organisation;
-    private long userId;
+    private User user;
     private String reciever;
     private String address;
     private String sentFrom;
@@ -21,8 +21,8 @@ public class ParcelBuilder {
         return this;
     }
 
-    public ParcelBuilder setUserId(long userId) {
-        this.userId = userId;
+    public ParcelBuilder setUser(User user) {
+        this.user = user;
         return this;
     }
     public ParcelBuilder setRegion(Region region) {
@@ -74,6 +74,6 @@ public class ParcelBuilder {
     }
 
     public Parcel createParcel() {
-        return new Parcel(organisation, userId, reciever, address, sentFrom, expectedDeliveryDate, status, format, serviceTypeId,barCode, region, zone);
+        return new Parcel(organisation, user, reciever, address, sentFrom, expectedDeliveryDate, status, format, serviceTypeId,barCode, region, zone);
     }
 }

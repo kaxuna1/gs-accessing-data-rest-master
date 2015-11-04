@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by vakhtanggelashvili on 10/21/15.
@@ -45,6 +46,7 @@ public class UsersController {
             return new JsonMessage(JsonReturnCodes.USEREXISTS.getCODE(),"მომხმარებელი ასეთი სახელით უკვე არსებობს");
         }
         Session session =sessionDao.findOne(Long.parseLong(sessionId));
+
         Region region;
         Zone zone;
         Organisation organisation;
@@ -100,6 +102,12 @@ public class UsersController {
                 }else return null;
             }
         }else return null;
+    }
+
+    @RequestMapping("/getUsersByRegion")
+    @ResponseBody
+    public List<User> getUsersByR(long regionId){
+        return regionRepository.findOne(regionId).getUsers();
     }
 
     @RequestMapping("/edituser")

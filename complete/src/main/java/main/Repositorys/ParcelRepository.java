@@ -24,7 +24,7 @@ public interface ParcelRepository extends JpaRepository<Parcel, Long> {
             " OR u.reciever LIKE CONCAT('%',:reciever,'%')" +
             " OR u.address LIKE CONCAT('%',:address,'%')" +
             " OR u.recievedBy LIKE CONCAT('%',:recievedBy,'%'))" +
-            " AND u.organisation=:organisation")
+            " AND u.organisation.id=:organisation")
     Page<Parcel> findByBarcodeOrRecieverOrAddressOrRecievedByAndOrganisation(@Param("barcode")String barcode,
                                                                              @Param("reciever")String reciever,
                                                                              @Param("address")String address,
@@ -67,14 +67,14 @@ public interface ParcelRepository extends JpaRepository<Parcel, Long> {
                                                                        Pageable pageable);
 
 
-    Page<Parcel> findByUserId(@Param("userId")int userId,Pageable pageable);
+    Page<Parcel> findByUserId(@Param("user")long user,Pageable pageable);
     Page<Parcel> findByOrganisation(@Param("organisation")long organisation,Pageable pageable);
     @Query("SELECT u FROM Parcel u where (u.deliveryDate between to_date(:dateStart,'MM/DD/YYYY') " +
             "and to_date(:dateEnd,'MM/DD/YYYY'))")
     Page<Parcel> findByDateRange(@Param("dateStart")Date dateStart,@Param("dateEnd")Date dateEnd,Pageable pageable);
     @Query("SELECT u FROM Parcel u where (u.deliveryDate between to_date(:dateStart,'MM/DD/YYYY') " +
             "and to_date(:dateEnd,'MM/DD/YYYY')) AND u.organisation=:organisation")
-    Page<Parcel> findByDateRangeAndId(@Param("dateStart")Date dateStart,
+    Page<Parcel> findByDateRangeAndOrganisation(@Param("dateStart")Date dateStart,
                                       @Param("dateEnd")Date dateEnd,
                                       @Param("organisation")long organisation,
                                       Pageable pageable);
