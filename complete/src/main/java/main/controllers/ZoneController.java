@@ -54,6 +54,16 @@ public class ZoneController {
     public List<Zone> getZones(){
         return zoneRepository.findAll();
     }
+    @RequestMapping("/getzonesformanager")
+    @ResponseBody
+    public List<Zone> getZonesForMAnager(@CookieValue("projectSessionId") String sessionId){
+        if(sessionId!=null){
+            Session session=sessionDao.findOne(Long.parseLong(sessionId));
+            if(session.isIsactive()){
+                return session.getUser().getRegion().getZones();
+            }else return null;
+        }else return null;
+    }
 
     @Autowired
     private RegionRepository regionRepository;

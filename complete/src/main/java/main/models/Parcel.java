@@ -56,9 +56,9 @@ public class Parcel {
     @JoinColumn(name = "formatId")
     private Format format;
 
-    @Column
-    @NotNull
-    private long serviceTypeId;
+    @ManyToOne
+    @JoinColumn(name = "serviceTypeId")
+    private ServiceType serviceType;
 
     @Column
     private String comment;
@@ -84,7 +84,7 @@ public class Parcel {
 
     }
 
-    public Parcel(Organisation organisation, User user, String reciever, String address, String sentFrom, Date expectedDeliveryDate, int status, Format format, long serviceTypeId, String barCode, Region region, Zone zone) {
+    public Parcel(Organisation organisation, User user, String reciever, String address, String sentFrom, Date expectedDeliveryDate, int status, Format format, ServiceType serviceType, String barCode, Region region, Zone zone) {
         this.setRegion(region);
         this.zone = zone;
         //this.regionId = regionId;
@@ -96,7 +96,7 @@ public class Parcel {
         this.setExpectedDeliveryDate(expectedDeliveryDate);
         this.setStatus(status);
         this.setFormat(format);
-        this.setServiceTypeId(serviceTypeId);
+        this.setServiceType(serviceType);
         this.setBarcode(barCode);
         //this.setZoneId(zoneId);
         this.movements=new ArrayList<Movement>();
@@ -177,12 +177,12 @@ public class Parcel {
         this.status = status;
     }
 
-    public long getServiceTypeId() {
-        return serviceTypeId;
+    public ServiceType getServiceType() {
+        return serviceType;
     }
 
-    public void setServiceTypeId(long serviceTypeId) {
-        this.serviceTypeId = serviceTypeId;
+    public void setServiceType(ServiceType serviceType) {
+        this.serviceType = serviceType;
     }
 
     public String getComment() {

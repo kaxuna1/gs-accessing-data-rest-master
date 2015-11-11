@@ -1,5 +1,8 @@
 package main.controllers;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import main.Repositorys.FormatRepository;
 import main.Repositorys.SessionRepository;
 import main.models.Enum.UserType;
@@ -69,6 +72,17 @@ public class FormatController {
             }else return null;
         }else return null;
 
+    }
+    @RequestMapping("/getformatsforselect")
+    @ResponseBody
+    public String getFormatsForSelect(){
+        JsonObject jsonObject=new JsonObject();
+        List<Format> formats=formatRepository.findAll();
+        for(int i=0;i<formats.size();i++){
+            jsonObject.addProperty(formats.get(i).getId()+"", formats.get(i).getName());
+        }
+
+        return jsonObject.toString();
     }
 
     @Autowired

@@ -1,9 +1,11 @@
 package main.controllers;
 
+import com.google.gson.JsonObject;
 import main.Repositorys.ServiceTypeRepository;
 import main.Repositorys.SessionRepository;
 import main.models.Enum.UserType;
 import main.models.Format;
+import main.models.Organisation;
 import main.models.ServiceType;
 import main.models.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,18 @@ public class ServiceTypeController {
     @ResponseBody
     public List<ServiceType> getFormats(){
         return serviceTypeRepository.findAll();
+    }
+
+    @RequestMapping("/getservicetypesforselect")
+    @ResponseBody
+    public String getFormatsForSelect(){
+        JsonObject jsonObject=new JsonObject();
+        List<ServiceType> serviceTypes=serviceTypeRepository.findAll();
+        for(int i=0;i<serviceTypes.size();i++){
+            jsonObject.addProperty(serviceTypes.get(i).getId()+"", serviceTypes.get(i).getName());
+        }
+
+        return jsonObject.toString();
     }
 
     @RequestMapping("/deleteservicetype")

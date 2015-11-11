@@ -81,4 +81,20 @@ public class Region {
     public void setUsers(List<User> users) {
         this.users = users;
     }
+
+    public List<Organisation> getOrganisations() {
+        return organisations;
+    }
+
+    public void setOrganisations(List<Organisation> organisations) {
+        this.organisations = organisations;
+    }
+
+    public List<Parcel> getParcels() {
+        return parcels;
+    }
+
+    public void setParcels(List<Parcel> parcels) {
+        this.parcels = parcels;
+    }
 }

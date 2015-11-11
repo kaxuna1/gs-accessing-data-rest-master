@@ -8,7 +8,7 @@ public enum MovementType {
     Registered(1),
     ReceivedByCourier(2),
     ArrivedAtOffice(3),
-    handeldToCourier(4),
+    handledToCourier(4),
     Delivered(5);
 
 

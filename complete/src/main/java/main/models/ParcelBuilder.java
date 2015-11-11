@@ -11,7 +11,7 @@ public class ParcelBuilder {
     private Date expectedDeliveryDate;
     private int status;
     private Format format;
-    private long serviceTypeId;
+    private ServiceType serviceType;
     private String barCode;
     private Region region;
     private Zone zone;
@@ -60,8 +60,8 @@ public class ParcelBuilder {
         return this;
     }
 
-    public ParcelBuilder setServiceTypeId(long serviceTypeId) {
-        this.serviceTypeId = serviceTypeId;
+    public ParcelBuilder setServiceTypeId(ServiceType serviceType) {
+        this.serviceType = serviceType;
         return this;
     }
     public ParcelBuilder setBarCode(String barCode){
@@ -74,6 +74,6 @@ public class ParcelBuilder {
     }
 
     public Parcel createParcel() {
-        return new Parcel(organisation, user, reciever, address, sentFrom, expectedDeliveryDate, status, format, serviceTypeId,barCode, region, zone);
+        return new Parcel(organisation, user, reciever, address, sentFrom, expectedDeliveryDate, status, format, serviceType,barCode, region, zone);
     }
 }

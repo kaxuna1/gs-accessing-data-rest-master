@@ -1,7 +1,11 @@
 package main.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by KGelashvili on 11/2/2015.
@@ -18,6 +22,10 @@ public class ServiceType {
     @NotNull
     private String name;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "serviceType",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Parcel> parcels;
+
     @Column
     @NotNull
     private float pricePlus;
@@ -27,6 +35,7 @@ public class ServiceType {
     public ServiceType(String name,float pricePlus){
         this.name=name;
         this.pricePlus=pricePlus;
+        parcels=new ArrayList<Parcel>();
 
     }
 
@@ -52,5 +61,13 @@ public class ServiceType {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public List<Parcel> getParcels() {
+        return parcels;
+    }
+
+    public void setParcels(List<Parcel> parcels) {
+        this.parcels = parcels;
     }
 }

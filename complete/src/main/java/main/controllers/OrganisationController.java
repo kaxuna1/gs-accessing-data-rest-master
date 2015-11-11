@@ -1,14 +1,12 @@
 package main.controllers;
 
+import com.google.gson.JsonObject;
 import main.Repositorys.OrganisationRepository;
 import main.Repositorys.RegionRepository;
 import main.Repositorys.SessionRepository;
 import main.Repositorys.UserRepository;
+import main.models.*;
 import main.models.Enum.UserType;
-import main.models.Organisation;
-import main.models.OrganisationBuilder;
-import main.models.Region;
-import main.models.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -99,6 +97,17 @@ public class OrganisationController {
     }
 
 
+    @RequestMapping("/getorganisationforselect")
+    @ResponseBody
+    public String getFormatsForSelect(){
+        JsonObject jsonObject=new JsonObject();
+        List<Organisation> organisations=organisationRepository.findAll();
+        for(int i=0;i<organisations.size();i++){
+            jsonObject.addProperty(organisations.get(i).getId()+"", organisations.get(i).getName());
+        }
+
+        return jsonObject.toString();
+    }
 
     private Pageable constructPageSpecification(int pageIndex) {
         Pageable pageSpecification = new PageRequest(pageIndex, 10);

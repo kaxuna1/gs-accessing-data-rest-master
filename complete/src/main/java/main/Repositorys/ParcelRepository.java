@@ -46,24 +46,26 @@ public interface ParcelRepository extends JpaRepository<Parcel, Long> {
             " OR u.reciever LIKE CONCAT('%',:reciever,'%')" +
             " OR u.address LIKE CONCAT('%',:address,'%')" +
             " OR u.recievedBy LIKE CONCAT('%',:recievedBy,'%'))" +
-            " AND u.region=:region")
-    Page<Parcel> findByBarcodeOrRecieverOrAddressOrRecievedByAndRegionId(@Param("barcode")String barcode,
+            " AND u.region.id=:region AND u.status=:status AND u.zone.id=1")
+    Page<Parcel> findByBarcodeOrRecieverOrAddressOrRecievedByAndRegionAndStatus(@Param("barcode")String barcode,
                                                                          @Param("reciever")String reciever,
                                                                          @Param("address")String address,
                                                                          @Param("recievedBy")String recievedBy,
                                                                          @Param("region")long region,
+                                                                         @Param("status")int status,
                                                                          Pageable pageable);
 
     @Query("SELECT u FROM Parcel u WHERE (u.barcode LIKE CONCAT('%',:barcode,'%')" +
             " OR u.reciever LIKE CONCAT('%',:reciever,'%')" +
             " OR u.address LIKE CONCAT('%',:address,'%')" +
             " OR u.recievedBy LIKE CONCAT('%',:recievedBy,'%'))" +
-            " AND u.zone=:zone")
-    Page<Parcel> findByBarcodeOrRecieverOrAddressOrRecievedByAndZoneId(@Param("barcode")String barcode,
+            " AND u.zone.id=:zone AND u.status=:status")
+    Page<Parcel> findByBarcodeOrRecieverOrAddressOrRecievedByAndZoneAndStatus(@Param("barcode")String barcode,
                                                                        @Param("reciever")String reciever,
                                                                        @Param("address")String address,
                                                                        @Param("recievedBy")String recievedBy,
                                                                        @Param("zone")long zone,
+                                                                       @Param("status")int status,
                                                                        Pageable pageable);
 
 
