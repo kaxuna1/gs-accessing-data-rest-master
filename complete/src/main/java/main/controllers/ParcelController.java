@@ -187,7 +187,9 @@ public class ParcelController {
     @ResponseBody
     public Page<Parcel> getParcels(@CookieValue("projectSessionId") String sessionId, int index, String search) {
 
+        if(true&&true||(true)&&!true){
 
+        }
         if (sessionId != null) {
             Session session = sessionRepository.findOne(Long.parseLong(sessionId));
             if (session.isIsactive()) {
@@ -198,15 +200,15 @@ public class ParcelController {
                         return parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndRegionAndStatus(search, search, search, search, session.getUser().getRegion().getId(), MovementType.ArrivedAtOffice.getCODE(), constructPageSpecification(index));
                     } else {
                         if (session.getUser().getType() == UserType.zoneManager.getCODE()) {
-                            parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndZoneAndStatus(search, search, search, search, session.getUser().getZone().getId(), MovementType.ArrivedAtOffice.getCODE(), constructPageSpecification(index));
+                            return parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndZoneAndStatus(search, search, search, search, session.getUser().getZone().getId(), MovementType.ArrivedAtOffice.getCODE(), constructPageSpecification(index));
                         } else
                             return parcelRepository.findByBarcodeOrRecieverOrAddressOrRecievedByAndOrganisation(search, search, search, search, session.getUser().getOrganisation().getId(), constructPageSpecification(index));
 
                     }
-                    return null;
                 }
             } else return null;
         } else return null;
+
     }
 
     @RequestMapping(value = "/giveparcelzone")
